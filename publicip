@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# help
+if [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+  echo "publicip v0.0.1"
+  echo "Sean Omlor <somlor@eml.cc>"
+  echo ""
+  echo "Get public ip address."
+  echo ""
+  echo "Usage:"
+  echo "  publicip"
+  echo ""
+  echo "Options:"
+  echo "  -h, --help   show this help."
+  echo ""
+  exit 0
+fi
+
+if ! [ -x "$(command -v dig)" ];
+then
+  echo "error: publicip relies on 'dig' whichi is unavailable."
+  exit 1
+fi
+
+dig +short myip.opendns.com @resolver1.opendns.com
+
