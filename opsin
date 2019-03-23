@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# determine if called with source
+if [[ $_ != $0 ]];
+then
+  SOURCE=true
+else
+  SOURCE=false
+fi
+
+# help
+if [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+  echo "opsin v0.0.1"
+  echo "Sean Omlor <somlor@eml.cc>"
+  echo ""
+  echo "Signin to 1Password and export session token."
+  echo ""
+  echo "Usage:"
+  echo "  source opsin [subdomain] [options]"
+  echo ""
+  echo "Arguments:"
+  echo "  subdomain    1password.com subdomain used for signin (defaults to 'my')."
+  echo ""
+  echo "Options:"
+  echo "  -h, --help   show this help."
+  echo ""
+  if [ "${SOURCE}" == true ];
+  then
+    return 0
+  else
+    exit 0
+  fi
+fi
+
+# require call via source
+if ! [ "${SOURCE}" == true ];
+then
+  echo "error: opsin needs to be called via source."
+  echo "try: opsin --help"
+  exit 1
+fi
+
+# set subdomain
+if [ -z "$1" ];
+then
+  SUBDOMAIN="my"
+else
+  SUBDOMAIN="$1"
+fi
+
+# regex to capture session var name and value
+RE='export (OP_SESSION_'"${SUBDOMAIN}"')="(.*)"'
+
+# read and process result of signin
+RESULT=$(op signin "${SUBDOMAIN}")
+if [ $? -eq 0 ];
+then
+  if [[ $RESULT =~ $RE ]];
+  then
+    OS_VAR="${BASH_REMATCH[1]}"
+    OS_VAL="${BASH_REMATCH[2]}"
+    echo "ok. exporting ${OS_VAR}=${OS_VAL}"
+    export ${OS_VAR}="${OS_VAL}"
+  else
+    echo ${RESULT}
+    return 1
+  fi
+else
+  echo ${RESULT}
+  return 1
+fi
+

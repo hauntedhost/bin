@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# help
+if [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+  echo "opget v0.0.1"
+  echo "Sean Omlor <somlor@eml.cc>"
+  echo ""
+  echo "Get password for 1Password item."
+  echo ""
+  echo "Usage:"
+  echo "  opget [item]"
+  echo ""
+  echo "Arguments:"
+  echo "  item    item name."
+  echo ""
+  echo "Options:"
+  echo "  -h, --help   show this help."
+  echo ""
+  exit 0
+fi
+
+ITEM=$1
+op get item ${ITEM} \
+  | jq -r '.details.fields[] 
+           | select(.designation == "password")
+	   | .value'
+

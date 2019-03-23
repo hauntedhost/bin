@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-ITEM=$1
-op get item ${ITEM} | jq -r '.details.fields[] | select(.designation == "password") | .value'
-
