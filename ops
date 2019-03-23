@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if ! [[ $_ != $0 ]];
+then
+  echo "error: ops needs to be called via source"
+  echo "usage: source ops"
+  exit 1
+fi
+
+RE='export OP_SESSION_my="(.*)"'
+RESULT=$(op signin)
+if [ $? -eq 0 ];
+then
+  if [[ $RESULT =~ $RE ]];
+  then
+    OSM="${BASH_REMATCH[1]}"
+    echo "exporting OP_SESSION_my=${OSM}"
+    export OP_SESSION_my="${OSM}"
+  else
+    echo ${RESULT}
+    exit 1
+  fi
+else
+  echo ${RESULT}
+  exit 1
+fi
+

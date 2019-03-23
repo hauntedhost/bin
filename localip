@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# defaults
+INTERFACE="wlan0"
+IPV="4"
+
+function parseopt() {
+  local OPT="$1"
+  echo $OPT | sed 's/^[^=]*=//g'
+}
+
+while test $# -gt 0;
+do
+  case "$1" in
+    -h|--help)
+      echo "localip v0.0.1"
+      echo "Sean Omlor <somlor@eml.cc>"
+      echo ""
+      echo "Show local ip address."
+      echo ""
+      echo "Usage:"
+      echo "  localip [options]"
+      echo ""
+      echo "Options:"
+      echo "  -h, --help        show this help."
+      echo "  -i, --interface   specify ifconfig interface. default is wlan0."
+      echo "  -v, --ipv         specify ip version. default is 4."
+      echo "  -4, -6            shorthand for -v 4 or -v 6, respectively"
+      echo ""
+      exit 0
+      ;;
+    -i)
+      INTERFACE="$2"
+      shift
+      shift
+      ;;
+    --interface*)
+      INTERFACE=$(parseopt $1)
+      shift
+      ;;
+    -4)
+      IPV="4"
+      shift
+      ;;
+    -6)
+      IPV="6"
+      shift
+      ;;
+    -v)
+      IPV="$2"
+      shift
+      shift
+      ;;
+    --ipv*)
+      IPV=$(parseopt $1)
+      shift
+      ;;
+    *)
+      echo "Error: invalid option: ${1}"
+      echo "See: localip --help"
+      exit 1
+      ;;
+  esac
+done
+
+if [ "${IPV}" == "4" ];
+then
+  ifconfig "${INTERFACE}" | awk '/inet / { print $2 }'
+elif [ "${IPV}" == "6" ]
+then
+  ifconfig "${INTERFACE}" | grep -v 'inet6 fe80' | awk '/inet6 / { print $2 }'
+else
+  echo "Error: invalid IP version: ${IPV}"
+  exit 1
+fi
+
