@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# move file to home trash dir
+mv $1 ~/.trash
+
