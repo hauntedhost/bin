@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# show help and exit
+if [ -z "$1" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+  echo "usage: grepkill [process]"
+  echo "grep and kill all matching processes."
+  exit 0
+fi
+
+# capture search pattern
+p="$1"
+
+# capture pids of matches, excluding our own grep
+pids=$(ps aux \
+  | grep -i "$p" \
+  | grep -vE "(grepkill|grep -i $p|ag -i $p|rg -i $p)" \
+  | awk '{ print $2 }')
+
+# exit if no pids, otherwise kill all the things
+if [ -z "$pids" ]; 
+then
+  echo "no processes found for: '${p}'."
+  exit 1
+else
+  # awk sorcery to output string with newlines as comma separated list
+  echo "$pids" | awk 'BEGIN { printf "✘ killing: " }; { printf d $1 } { d=", " } END { print "" }'
+  # take the shot
+  echo "$pids" | xargs kill -9
+fi
+

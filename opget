@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # help
-if [ "$1" == "-h" ] || [ "$1" == "--help" ];
+if [ -z "$1" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
 then
   echo "opget v0.0.1"
   echo "Sean Omlor <somlor@eml.cc>"
