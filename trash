@@ -1,6 +1,29 @@
 #!/usr/bin/env bash
 # move file to ~/.trash dir
 
-mkdir -p ~/.trash
-mv $1 ~/.trash
+if [ -z "$1" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+  echo "trash v0.0.1"
+  echo "Sean Omlor <somlor@eml.cc>"
+  echo ""
+  echo "Move specified files or directories to $HOME/.trash folder."
+  echo ""
+  echo "Usage:"
+  echo "  trash [source]"
+  echo ""
+  echo "Arguments:"
+  echo "  source    file(s) or folder(s) to move."
+  echo ""
+  echo "Options:"
+  echo "  -h, --help   show this help."
+  echo ""
+  exit 0
+fi
+
+# make a dest folder with timestamp and unique suffix to prevent clobbering
+dest=$(date +%Y-%m-%d-%H-%M-%S)"--"$(jot -rcs '' 8 a z)
+mkdir -p "$HOME/.trash/${dest}"
+
+# move glob
+mv "$@" "$HOME/.trash/${dest}/"
 
