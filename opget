@@ -20,6 +20,14 @@ then
   exit 0
 fi
 
+# require 1password cli
+if ! [ -x "$(command -v op)" ];
+then
+  echo "error: opget relies on 'op' which is unavailable."
+  echo "see: https://support.1password.com/command-line"
+  exit 1
+fi
+
 ITEM=$1
 op get item ${ITEM} \
   | jq -r '.details.fields[] 

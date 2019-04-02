@@ -19,7 +19,7 @@ fi
 
 if ! [ -x "$(command -v dig)" ];
 then
-  echo "error: publicip relies on 'dig' whichi is unavailable."
+  echo "error: publicip relies on 'dig' which is unavailable."
   exit 1
 fi
 

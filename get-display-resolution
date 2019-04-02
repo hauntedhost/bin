@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# require macos
+if ! [ $(uname) == "Darwin" ];
+then
+  echo "error: this is a macOS specific tool."
+  exit 1
+fi
+
+# help
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+  echo "usage: get-display-resolution"
+  echo "get display resolution details"
+  exit 0
+fi
+
+system_profiler SPDisplaysDataType | grep Resolution | awk '{$1=$1;print}'
+

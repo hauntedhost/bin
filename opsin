@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# determine if called with source
+# first check if called via source
 if [[ $_ != $0 ]];
 then
   SOURCE=true
@@ -31,6 +31,14 @@ then
   else
     exit 0
   fi
+fi
+
+# require 1password cli
+if ! [ -x "$(command -v op)" ];
+then
+  echo "error: opget relies on 'op' which is unavailable."
+  echo "see: https://support.1password.com/command-line"
+  exit 1
 fi
 
 # require call via source

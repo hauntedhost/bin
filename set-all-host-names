@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# require macos
+if ! [ $(uname) == "Darwin" ];
+then
+  echo "error: this is a macOS specific tool."
+  exit 1
+fi
+
+# help
+if [ -z "$1" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+  echo "usage: set-all-host-names <new hostname>"
+  echo "sets macOS system HostName, LocalHostName and ComputerName"
+  exit 0
+fi
+
+sudo scutil --set HostName $1
+sudo scutil --set LocalHostName $1
+sudo scutil --set ComputerName $1
+sudo killall -HUP mDNSResponder
+
